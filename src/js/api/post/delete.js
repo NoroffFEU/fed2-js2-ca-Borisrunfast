@@ -9,6 +9,5 @@ export async function deletePost(id) {
             'Authorization': `Bearer ${JSON.parse(localStorage.accessToken)}`,
             'X-Noroff-API-Key': API_KEY
         },
-        }) 
-        
+    }) 
 }
