@@ -1,1 +1,6 @@
-export function onLogout() {}
+export function onLogout() {
+
+    window.localStorage.clear()
+    window.location.reload()
+
+}
