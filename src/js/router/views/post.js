@@ -1,63 +1,78 @@
 import { readPost } from "../../api/post/read"
+import { isAuthor } from "../../utilities/isAuthor"
+import { deletePost } from "../../api/post/delete"
 
-
-
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const urlid = urlParams.get('id')
-
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const urlid = urlParams.get("id")
 
 if (!urlid) {
-    alert("Something wrong with the ID of the post, you'll be sent back to the main page");
+  alert("Something went wrong with the ID of the post. You'll be redirected to the main page.")
+  window.location.href = "/"
 }
 
-
-const postContainer = document.getElementById('post-body')
+const postContainer = document.getElementById("post-body")
 
 const data = await readPost(urlid)
+const { title, body, media, tags, id, author } = data.data
 
-console.log(data)
+const postWrapper = document.createElement("div")
+postWrapper.classList = "space-y-6"
 
-const {title, body, media, tags, id} = data.data
-
-const postBody = document.createElement('div')
-postBody.classList = "post-decoration-1"
-
-const postTitle = document.createElement('h3')
+const postTitle = document.createElement("h2")
 postTitle.innerText = title
+postTitle.classList = "text-2xl font-bold text-center text-primary"
 
-const postImg = document.createElement('img')
-if(media?.url) {
-    postImg.src = media?.url
-    postImg.alt = media?.alt
-    postImg.classList = "post-img"
+if (media?.url) {
+  const postImg = document.createElement("img")
+  postImg.src = media.url
+  postImg.alt = media.alt || "Post image"
+  postImg.classList = "w-full h-auto rounded-lg shadow-md"
+  postWrapper.appendChild(postImg)
+} else {
+const postImg = document.createElement("img")
+  postImg.src = "../../../public/images/noImage.jpg"
+  postImg.alt = "no image"
+  postImg.classList = "w-full h-auto rounded-lg shadow-md"
+  postWrapper.appendChild(postImg)
 }
 
-
-const postParagraph = document.createElement('p')
+const postParagraph = document.createElement("p")
 postParagraph.innerText = body
-const postTags = document.createElement('p')
-postTags.innerText = `Tags: ${tags.join(' ')}`
+postParagraph.classList = "text-gray-800 leading-relaxed"
 
+const postTags = document.createElement("p")
+postTags.innerText = `Tags: ${tags.join(", ")}`
+postTags.classList = "text-sm text-gray-500 italic"
 
-const editBtn = document.createElement('button')
-editBtn.innerText = "edit"
+if (isAuthor(author.name)) {
+  const actionButtonsWrapper = document.createElement("div")
+  actionButtonsWrapper.classList = "flex space-x-4 justify-center mt-6"
 
-editBtn.addEventListener('click', () => {
-    window.location.href = `${window.location.origin}/post/edit/?id=${id}`;
-})
+  const editBtn = document.createElement("button")
+  editBtn.innerText = "Edit"
+  editBtn.classList = "bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+  editBtn.addEventListener("click", () => {
+    window.location.href = `${window.location.origin}/post/edit/?id=${id}`
+  });
 
-const deleteBtn = document.createElement('button')
-deleteBtn.innerText = "delete"
+  const deleteBtn = document.createElement("button")
+  deleteBtn.innerText = "Delete"
+  deleteBtn.classList = "bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+  deleteBtn.addEventListener("click", () => {
+    if (confirm("Are you sure you want to delete this post?")) {
+      deletePost(id).then(() => {
+        window.location.href = "/"
+      })
+    }
+  })
 
-deleteBtn.addEventListener('click', () => {
-    deletePost(id)
-})
+  actionButtonsWrapper.append(editBtn, deleteBtn)
+  postWrapper.append(postTitle, postParagraph, postTags, actionButtonsWrapper)
+} else {
+    postWrapper.append(postTitle, postParagraph, postTags)
+}
 
-const viewPostBtn = document.createElement('button')
-viewPostBtn.innerText = "view post"
+postContainer.append(postWrapper)
 
-postBody.append(postTitle, postImg, postParagraph, postTags, editBtn, deleteBtn)
-
-postContainer.append(postBody)
 

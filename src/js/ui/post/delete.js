@@ -2,6 +2,12 @@ import {deletePost} from "../../api/post/delete"
 
 export async function onDeletePost(id) {
 
+    const doDelete = confirm("Are you sure you want to delete this post?")
+
+    if(!doDelete) {
+        return
+    }
+
     let deleted
 
     try {
@@ -10,10 +16,7 @@ export async function onDeletePost(id) {
     catch(err) {
         alert(`error: ${deleted.errors[0].message}`)
     }
-    finally{
-        if (post.data) {
-            alert(`Post has been deleted`)
-        }
-    }
-
+    setTimeout(()=> {
+        window.location.reload()
+    }, 200)
 }
