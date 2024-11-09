@@ -2,8 +2,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  appType: "mpa",
-  base: "/fed2-js2-ca-Borisrunfast/",
+  base: "/",
   build: {
     target: "esnext",
     rollupOptions: {
