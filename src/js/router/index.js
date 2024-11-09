@@ -1,8 +1,10 @@
 // This function controls which JavaScript file is loaded on which page
 // In order to add additional pages, you will need to implement them below
 // You may change the behaviour or approach of this file if you choose
-export default async function router(pathname = window.location.pathname) {
-  switch (pathname) {
+export default async function router() {
+  const hash = window.location.hash || "#/";
+
+  switch (hash) {
     case "#/":
       await import("./views/home.js");
       break;

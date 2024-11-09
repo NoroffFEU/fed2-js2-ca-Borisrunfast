@@ -3,7 +3,7 @@ import "./css/style.css";
 import router from "./js/router";
 import { toggleMenu } from "./js/utilities/toggleNavigation"
 
-await router(window.location.pathname);
+await router();
 
 
 const menuButton = document.querySelector("#menu-toggle-btn");
